@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".activity.SignInActivity"
+            android:name=".activity.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.SendPhotoActivity" />
+        <activity android:name=".activity.SendPhotoActivity"
+            android:label="@string/activity_label_send_photo"/>
         <activity android:name=".activity.PhotoViewActivity" />
 
         <activity

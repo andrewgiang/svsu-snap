@@ -16,7 +16,6 @@ import com.detroitlabs.snapit.PhotoUtil;
 import com.detroitlabs.snapit.R;
 import com.detroitlabs.snapit.Snap;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.io.File;
@@ -24,6 +23,7 @@ import java.io.File;
 public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_REQUEST = 100;
+    private PhotoAdapter adapter;
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
                 });
 
         final ListView photosListView = (ListView) findViewById(R.id.photoListView);
-        final PhotoAdapter adapter = new PhotoAdapter(this);
+        adapter = new PhotoAdapter(this);
         photosListView.setAdapter(adapter);
         photosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -62,6 +62,14 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(adapter != null) {
+            adapter.loadObjects();
+        }
     }
 
     @Override
@@ -87,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (id == R.id.action_logout) {
             ParseUser.logOut();
-            Intent signinIntent = new Intent(this, SignInActivity.class);
+            Intent signinIntent = new Intent(this, LoginActivity.class);
             signinIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(signinIntent);
             return true;

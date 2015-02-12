@@ -3,6 +3,7 @@ package com.detroitlabs.snapit.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,8 +12,9 @@ import com.detroitlabs.snapit.R;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
-public class SignInActivity extends ActionBarActivity implements View.OnClickListener {
+public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
     private EditText username;
     private EditText password;
@@ -38,7 +40,9 @@ public class SignInActivity extends ActionBarActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        ParseUser.logInInBackground(username.getText().toString().toLowerCase(), password.getText().toString(), getLoginCallback());
+        if(formNotEmpty()) {
+            ParseUser.logInInBackground(username.getText().toString().toLowerCase(), password.getText().toString(), getLoginCallback());
+        }
     }
 
     private LogInCallback getLoginCallback() {
@@ -48,10 +52,34 @@ public class SignInActivity extends ActionBarActivity implements View.OnClickLis
                 if (parseUser != null) {
                     startMainActivityIfLoggedIn();
                 } else {
-                    Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if(e.getCode() == ParseException.OBJECT_NOT_FOUND){
+                        registerUser();
+                    }
+                    Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         };
+    }
+
+    private void registerUser() {
+        ParseUser user = new ParseUser();
+        if(formNotEmpty()){
+            user.setUsername(username.getText().toString());
+            user.setPassword(password.getText().toString());
+            user.signUpInBackground(new SignUpCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e == null){
+                        startMainActivityIfLoggedIn();
+                    }
+                }
+            });
+        }
+
+    }
+
+    private boolean formNotEmpty() {
+        return !TextUtils.isEmpty(username.getText()) && !TextUtils.isEmpty(password.getText());
     }
 
 }

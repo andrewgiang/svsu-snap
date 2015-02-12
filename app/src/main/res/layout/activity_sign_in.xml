@@ -24,7 +24,7 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:text="Submit"
+        android:text="Sign In Or Register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
